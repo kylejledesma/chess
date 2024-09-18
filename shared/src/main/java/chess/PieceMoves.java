@@ -33,7 +33,7 @@ public class PieceMoves {
         if (board.getPiece(checkPositionUp)==null) {
             addValidMoves(checkPositionUp);
         } else if (board.getPiece(checkPositionUp).getTeamColor() == board.getPiece(position).getTeamColor()) {
-            return null;
+            // return null;
         } else {
             addValidMoves(checkPositionUp);
         }
@@ -44,7 +44,7 @@ public class PieceMoves {
         if (board.getPiece(checkPositionDRUp)==null) {
             addValidMoves(checkPositionDRUp);
         } else if (board.getPiece(checkPositionDRUp).getTeamColor() == board.getPiece(position).getTeamColor()) {
-            return null;
+            // return null;
         } else {
             addValidMoves(checkPositionDRUp);
         }
@@ -55,7 +55,7 @@ public class PieceMoves {
         if (board.getPiece(checkPositionDLUp)==null) {
             addValidMoves(checkPositionDLUp);
         } else if (board.getPiece(checkPositionDLUp).getTeamColor() == board.getPiece(position).getTeamColor()) {
-            return null;
+            // return null;
         } else {
             addValidMoves(checkPositionDLUp);
         }
@@ -66,7 +66,7 @@ public class PieceMoves {
         if (board.getPiece(checkPositionRight)==null) {
             addValidMoves(checkPositionRight);
         } else if (board.getPiece(checkPositionRight).getTeamColor() == board.getPiece(position).getTeamColor()) {
-            return null;
+            // return null;
         } else {
             addValidMoves(checkPositionRight);
         }
@@ -77,7 +77,7 @@ public class PieceMoves {
         if (board.getPiece(checkPositionLeft)==null) {
             addValidMoves(checkPositionLeft);
         } else if (board.getPiece(checkPositionLeft).getTeamColor() == board.getPiece(position).getTeamColor()) {
-            return null;
+            // return null;
         } else {
             addValidMoves(checkPositionLeft);
         }
@@ -88,7 +88,7 @@ public class PieceMoves {
         if (board.getPiece(checkPositionDown)==null) {
             addValidMoves(checkPositionDown);
         } else if (board.getPiece(checkPositionDown).getTeamColor() == board.getPiece(position).getTeamColor()) {
-            return null;
+            // return null;
         } else {
             addValidMoves(checkPositionDown);
         }
@@ -99,7 +99,7 @@ public class PieceMoves {
         if (board.getPiece(checkPositionDRDown)==null) {
             addValidMoves(checkPositionDRDown);
         } else if (board.getPiece(checkPositionDRDown).getTeamColor() == board.getPiece(position).getTeamColor()) {
-            return null;
+            // return null;
         } else {
             addValidMoves(checkPositionDRDown);
         }
@@ -110,7 +110,7 @@ public class PieceMoves {
         if (board.getPiece(checkPositionDLDown)==null) {
             addValidMoves(checkPositionDLDown);
         } else if (board.getPiece(checkPositionDLDown).getTeamColor() == board.getPiece(position).getTeamColor()) {
-            return null;
+            // return null;
         } else {
             addValidMoves(checkPositionDLDown);
         }

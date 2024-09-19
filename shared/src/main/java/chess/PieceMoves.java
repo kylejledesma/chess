@@ -27,6 +27,9 @@ public class PieceMoves {
         } else if (pieceType == ChessPiece.PieceType.ROOK) {
             RookMovesCalculator calculator = new RookMovesCalculator();
             validMoves = calculator.checkMoves(board, position);
+        } else if (pieceType == ChessPiece.PieceType.QUEEN) {
+            QueenMovesCalculator calculator = new QueenMovesCalculator();
+            validMoves = calculator.checkMoves(board, position);
         }
     }
 

@@ -48,6 +48,8 @@ public class BishopMovesCalculator {
             } else if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(position).getTeamColor()) {
                 validMoves.add(new ChessMove(position, checkPosition, null));
                 break; // Break so that once you hit an opposing piece, you don't keep calculating the squares behind it
+            } else {
+                break;
             }
         }
     }
@@ -63,7 +65,9 @@ public class BishopMovesCalculator {
                 validMoves.add(new ChessMove(position, checkPosition, null));
             } else if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(position).getTeamColor()) {
                 validMoves.add(new ChessMove(position, checkPosition, null));
-                break; // Break so that once you hit an opposing piece, you don't keep calculating the squares behind it
+                break;
+            } else {
+                break;
             }
         }
     }
@@ -79,7 +83,9 @@ public class BishopMovesCalculator {
                 validMoves.add(new ChessMove(position, checkPosition, null));
             } else if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(position).getTeamColor()) {
                 validMoves.add(new ChessMove(position, checkPosition, null));
-                break; // Break so that once you hit an opposing piece, you don't keep calculating the squares behind it
+                break;
+            } else {
+                break;
             }
         }
     }
@@ -95,7 +101,9 @@ public class BishopMovesCalculator {
                 validMoves.add(new ChessMove(position, checkPosition, null));
             } else if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(position).getTeamColor()) {
                 validMoves.add(new ChessMove(position, checkPosition, null));
-                break; // Break so that once you hit an opposing piece, you don't keep calculating the squares behind it
+                break;
+            } else {
+                break;
             }
         }
     }

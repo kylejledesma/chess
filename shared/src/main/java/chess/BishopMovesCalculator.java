@@ -33,19 +33,6 @@ public class BishopMovesCalculator {
         checkDiagonalDownRightMoves();
         checkDiagonalDownLeftMoves();
 
-//        // Up and Right
-//        // Check Square R+1, C+1 of the Piece
-//        while(x < 8 && y < 7 && board.getPiece(checkPositionDiagonalUpRight).getTeamColor() == board.getPiece(position).getTeamColor()){ // Allow move if not at the top rightmost position
-//            ChessPosition checkPositionDRUp = new ChessPosition(x+1, y+1);
-//            if (board.getPiece(checkPositionDRUp)==null) {
-//                addValidMoves(checkPositionDRUp);
-//            } else if (board.getPiece(checkPositionDRUp).getTeamColor() == board.getPiece(position).getTeamColor()) {
-//                // return null;
-//            } else {
-//                addValidMoves(checkPositionDRUp);
-//            }
-//        }
-
         return validMoves;
     }
 
@@ -60,6 +47,7 @@ public class BishopMovesCalculator {
                 validMoves.add(new ChessMove(position, checkPosition, null));
             } else if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(position).getTeamColor()) {
                 validMoves.add(new ChessMove(position, checkPosition, null));
+                break; // Break so that once you hit an opposing piece, you don't keep calculating the squares behind it
             }
         }
     }
@@ -67,7 +55,7 @@ public class BishopMovesCalculator {
     private void checkDiagonalUpLeftMoves() {
         int a = x;
         int b = y;
-        while(a<8 && b>0){
+        while(a<8 && b>1){
             a++;
             b--;
             ChessPosition checkPosition = new ChessPosition(a, b);
@@ -75,6 +63,7 @@ public class BishopMovesCalculator {
                 validMoves.add(new ChessMove(position, checkPosition, null));
             } else if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(position).getTeamColor()) {
                 validMoves.add(new ChessMove(position, checkPosition, null));
+                break; // Break so that once you hit an opposing piece, you don't keep calculating the squares behind it
             }
         }
     }
@@ -82,7 +71,7 @@ public class BishopMovesCalculator {
     private void checkDiagonalDownRightMoves() {
         int a = x;
         int b = y;
-        while(a>0 && b<8){
+        while(a>1 && b<8){
             a--;
             b++;
             ChessPosition checkPosition = new ChessPosition(a, b);
@@ -90,6 +79,7 @@ public class BishopMovesCalculator {
                 validMoves.add(new ChessMove(position, checkPosition, null));
             } else if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(position).getTeamColor()) {
                 validMoves.add(new ChessMove(position, checkPosition, null));
+                break; // Break so that once you hit an opposing piece, you don't keep calculating the squares behind it
             }
         }
     }
@@ -105,6 +95,7 @@ public class BishopMovesCalculator {
                 validMoves.add(new ChessMove(position, checkPosition, null));
             } else if (board.getPiece(checkPosition).getTeamColor() != board.getPiece(position).getTeamColor()) {
                 validMoves.add(new ChessMove(position, checkPosition, null));
+                break; // Break so that once you hit an opposing piece, you don't keep calculating the squares behind it
             }
         }
     }

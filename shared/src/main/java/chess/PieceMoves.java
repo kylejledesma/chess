@@ -30,6 +30,9 @@ public class PieceMoves {
         } else if (pieceType == ChessPiece.PieceType.QUEEN) {
             QueenMovesCalculator calculator = new QueenMovesCalculator();
             validMoves = calculator.checkMoves(board, position);
+        } else if (pieceType == ChessPiece.PieceType.KNIGHT) {
+            KnightMovesCalculator calculator = new KnightMovesCalculator();
+            validMoves = calculator.checkMoves(board, position);
         }
     }
 

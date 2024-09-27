@@ -3,181 +3,149 @@ package chess;
 import java.util.ArrayList;
 
 public class PawnMovesCalculator {
-    private ChessPosition position;
+    private ChessBoard myBoard;
+    private ChessPosition startPosition;
+    private ArrayList<ChessMove> validMoves = new ArrayList<>();
     private int x;
     private int y;
-    private ArrayList<ChessMove> validMoves = new ArrayList<>();
-    private ChessBoard board;
     private String team;
 
-    public PawnMovesCalculator() {
+    PawnMovesCalculator(){
 
     }
 
-    /** This function checks for valid positions of the BISHOP piece
-     *  It returns an array of valid positions
-     */
-    public void addValidMoves(ChessPosition endPosition) {
-        ChessMove move = new ChessMove(position, endPosition, null);
-        validMoves.add(move);
-    }
+    public ArrayList<ChessMove> checkValidMoves(ChessBoard board, ChessPosition position){
+        // Initialize values
+        this.myBoard = board;
+        this.startPosition = position;
+        this.x = position.getRow();
+        this.y = position.getColumn();
+        this.team = board.getPiece(position).getTeamColor().toString();
 
-    public ArrayList<ChessMove> checkMoves(ChessBoard chessBoard, ChessPosition pos) {
-        position = pos;
-        x = position.getRow();
-        y = position.getColumn();
-        board = chessBoard;
-        team = chessBoard.getPiece(pos).getTeamColor().toString().toLowerCase();
-
-        // Checks Team. Runs Pawn Code based on which team Piece belongs to
-        if (team.equals("white")) {
-            checkUpMoves();
-        }else if (team.equals("black")) {
-            checkDownMoves();
+        if (team.equals("WHITE")){
+            checkUp();
+        } else if (team.equals("BLACK")) {
+            checkDown();
         }
 
         return validMoves;
     }
 
     /**
-     * Calculates the possible moves for White Pawns
+     * Calculates Up Moves for White Piece
      */
-    private void checkUpMoves() {
-        int a = x;
-        int b = y;
+    private void checkUp(){
 
-        // Check a space ahead
-        if(a<8){
-            ChessPosition checkPositionUp = new ChessPosition(a+1, b);
-
-            if (board.getPiece(checkPositionUp)==null) {
-
-                validMoves.add(new ChessMove(position, checkPositionUp, null));
-
-                // Only if there is empty square ahead does it check 2 spaces ahead if on start line
-                if(a==2){
-                    ChessPosition checkPosition2Up = new ChessPosition(a+2, b);
-                    if (board.getPiece(checkPosition2Up)==null) {
-                        validMoves.add(new ChessMove(position, checkPosition2Up, null));
+        // Condition Check: Still has a row ahead
+        if (x < 8) {
+            ChessPosition checkPositionUp = new ChessPosition(x + 1, y);
+            if (myBoard.getPiece(checkPositionUp) == null) {
+                validMoves.add(new ChessMove(startPosition, checkPositionUp, null));
+                if (x == 2) {
+                    ChessPosition checkPosition2Up = new ChessPosition(x + 2, y);
+                    if (myBoard.getPiece(checkPosition2Up) == null) {
+                        validMoves.add(new ChessMove(startPosition, checkPosition2Up, null));
                     }
+                }
+            }
+
+            // Check Diagonal Left. Condition Check: Still has a column to the left
+            if (y > 1) {
+                ChessPosition checkPositionDL = new ChessPosition(x + 1, y - 1);
+                if (myBoard.getPiece(checkPositionDL) == null) {
+                } else if (!myBoard.getPiece(checkPositionDL).getTeamColor().toString().equals(team)) {
+                    validMoves.add(new ChessMove(startPosition, checkPositionDL, null));
+                }
+            }
+
+            // Check Diagonal Right. Condition Check: Still has a column to the right
+            if (y < 8) {
+                ChessPosition checkPositionDR = new ChessPosition(x + 1, y + 1);
+                if (myBoard.getPiece(checkPositionDR) == null) {
+                } else if (!myBoard.getPiece(checkPositionDR).getTeamColor().toString().equals(team)) {
+                    validMoves.add(new ChessMove(startPosition, checkPositionDR, null));
                 }
             }
         }
 
-        // Check up and left. Valid if opposing piece present
-        if(a<8 && b>1){
-            ChessPosition checkPositionDLUp = new ChessPosition(a+1, b-1);
-            if (board.getPiece(checkPositionDLUp)==null) {
-
-            } else if (board.getPiece(checkPositionDLUp).getTeamColor() != board.getPiece(position).getTeamColor()) {
-                validMoves.add(new ChessMove(position, checkPositionDLUp, null));
-            }
-        }
-
-        // Check up and right. Valid if opposing piece present
-        if(a<8 && b<8){
-            ChessPosition checkPositionDRUp = new ChessPosition(a+1, b+1);
-            if (board.getPiece(checkPositionDRUp)==null) {
-
-            } else if (board.getPiece(checkPositionDRUp).getTeamColor() != board.getPiece(position).getTeamColor()) {
-                validMoves.add(new ChessMove(position, checkPositionDRUp, null));
-            }
-        }
-
-        // Scans through the validMoves array for any instance of a Pawn arriving at the end, thus qualifying for promotion
+        // Check for Promotion
         int i = 0;
         int s = validMoves.size();
-        while(i < s){
-            if(validMoves.get(i).getEndPosition().getRow() == 8 && validMoves.get(i).getPromotionPiece() == null){
-                ChessMove toInsertQueen = new ChessMove(position, validMoves.get(i).getEndPosition(), ChessPiece.PieceType.QUEEN);
-                ChessMove toInsertRook = new ChessMove(position, validMoves.get(i).getEndPosition(), ChessPiece.PieceType.ROOK);
-                ChessMove toInsertBishop = new ChessMove(position, validMoves.get(i).getEndPosition(), ChessPiece.PieceType.BISHOP);
-                ChessMove toInsertKnight = new ChessMove(position, validMoves.get(i).getEndPosition(), ChessPiece.PieceType.KNIGHT);
-                validMoves.add(toInsertQueen);
-                validMoves.add(toInsertRook);
-                validMoves.add(toInsertBishop);
-                validMoves.add(toInsertKnight);
+        while (i < s) {
+            if (validMoves.get(i).getEndPosition().getRow() == 8) {
+                validMoves.add(new ChessMove(startPosition, validMoves.get(i).getEndPosition(), ChessPiece.PieceType.QUEEN));
+                validMoves.add(new ChessMove(startPosition, validMoves.get(i).getEndPosition(), ChessPiece.PieceType.ROOK));
+                validMoves.add(new ChessMove(startPosition, validMoves.get(i).getEndPosition(), ChessPiece.PieceType.BISHOP));
+                validMoves.add(new ChessMove(startPosition, validMoves.get(i).getEndPosition(), ChessPiece.PieceType.KNIGHT));
             }
             i++;
         }
 
-        // Scans through the validMoves array for any instance of a Pawn at end line but no promotion piece data. Removes it.
+        // Remove empty ChessMove at Row 8 without PromoPieceType
         i = 0;
-        //s = validMoves.size();
-        while(i < validMoves.size()){
-            if (validMoves.get(i).getEndPosition().getRow() == 8 && validMoves.get(i).getPromotionPiece() == null){
+        while (i < s) {
+            if (validMoves.get(i).getEndPosition().getRow() == 8 && validMoves.get(i).getPromotionPiece() == null) {
                 validMoves.remove(i);
-            }else i++;
+            } else i++;
         }
+
     }
 
     /**
-     * Calculates the possible moves for Black Pawns
+     * Calculates Downward Moves for Black Piece
      */
-    private void checkDownMoves() {
-        int a = x;
-        int b = y;
-
-        // Check a space below
-        if(a>1){
-            ChessPosition checkPositionUp = new ChessPosition(a-1, b);
-            if (board.getPiece(checkPositionUp)==null) {
-
-                validMoves.add(new ChessMove(position, checkPositionUp, null));
-
-                // Only when vacant square ahead does it check 2 spaces ahead if on start line
-                if(a==7){
-                    ChessPosition checkPosition2Up = new ChessPosition(a-2, b);
-                    if (board.getPiece(checkPosition2Up)==null) {
-                        validMoves.add(new ChessMove(position, checkPosition2Up, null));
+    private void checkDown() {
+        // Condition Check: Still has a row below
+        if (x > 1) {
+            ChessPosition checkPositionUp = new ChessPosition(x - 1, y);
+            if (myBoard.getPiece(checkPositionUp) == null) {
+                validMoves.add(new ChessMove(startPosition, checkPositionUp, null));
+                if (x == 7) {
+                    ChessPosition checkPosition2Up = new ChessPosition(x - 2, y);
+                    if (myBoard.getPiece(checkPosition2Up) == null) {
+                        validMoves.add(new ChessMove(startPosition, checkPosition2Up, null));
                     }
+                }
+            }
+
+            // Check Diagonal Left. Condition Check: Still has a column to the left
+            if (y > 1) {
+                ChessPosition checkPositionDL = new ChessPosition(x - 1, y - 1);
+                if (myBoard.getPiece(checkPositionDL) == null) {
+                } else if (!myBoard.getPiece(checkPositionDL).getTeamColor().toString().equals(team)) {
+                    validMoves.add(new ChessMove(startPosition, checkPositionDL, null));
+                }
+            }
+
+            // Check Diagonal Right. Condition Check: Still has a column to the right
+            if (y < 8) {
+                ChessPosition checkPositionDR = new ChessPosition(x - 1, y + 1);
+                if (myBoard.getPiece(checkPositionDR) == null) {
+                } else if (!myBoard.getPiece(checkPositionDR).getTeamColor().toString().equals(team)) {
+                    validMoves.add(new ChessMove(startPosition, checkPositionDR, null));
                 }
             }
         }
 
-        // Check down and left. Valid if opposing piece present
-        if(a>1 && b>1){
-            ChessPosition checkPositionDLUp = new ChessPosition(a-1, b-1);
-            if (board.getPiece(checkPositionDLUp)==null) {
-
-            } else if (board.getPiece(checkPositionDLUp).getTeamColor() != board.getPiece(position).getTeamColor()) {
-                validMoves.add(new ChessMove(position, checkPositionDLUp, null));
-            }
-        }
-
-        // Check down and right. Valid if opposing piece present
-        if(a>1 && b<8){
-            ChessPosition checkPositionDRUp = new ChessPosition(a-1, b+1);
-            if (board.getPiece(checkPositionDRUp)==null) {
-
-            } else if (board.getPiece(checkPositionDRUp).getTeamColor() != board.getPiece(position).getTeamColor()) {
-                validMoves.add(new ChessMove(position, checkPositionDRUp, null));
-            }
-        }
-
-        // Scans through the validMoves array for any instance of a Pawn arriving at the end, thus qualifying for promotion
+        // Check for Promotion
         int i = 0;
         int s = validMoves.size();
-        while(i < s){
-            if(validMoves.get(i).getEndPosition().getRow() == 1 && validMoves.get(i).getPromotionPiece() == null){
-                ChessMove toInsertQueen = new ChessMove(position, validMoves.get(i).getEndPosition(), ChessPiece.PieceType.QUEEN);
-                ChessMove toInsertRook = new ChessMove(position, validMoves.get(i).getEndPosition(), ChessPiece.PieceType.ROOK);
-                ChessMove toInsertBishop = new ChessMove(position, validMoves.get(i).getEndPosition(), ChessPiece.PieceType.BISHOP);
-                ChessMove toInsertKnight = new ChessMove(position, validMoves.get(i).getEndPosition(), ChessPiece.PieceType.KNIGHT);
-                validMoves.add(toInsertQueen);
-                validMoves.add(toInsertRook);
-                validMoves.add(toInsertBishop);
-                validMoves.add(toInsertKnight);
+        while (i < s) {
+            if (validMoves.get(i).getEndPosition().getRow() == 1) {
+                validMoves.add(new ChessMove(startPosition, validMoves.get(i).getEndPosition(), ChessPiece.PieceType.QUEEN));
+                validMoves.add(new ChessMove(startPosition, validMoves.get(i).getEndPosition(), ChessPiece.PieceType.ROOK));
+                validMoves.add(new ChessMove(startPosition, validMoves.get(i).getEndPosition(), ChessPiece.PieceType.BISHOP));
+                validMoves.add(new ChessMove(startPosition, validMoves.get(i).getEndPosition(), ChessPiece.PieceType.KNIGHT));
             }
             i++;
         }
 
-        // Scans through the validMoves array for any instance of a Pawn at end line but no promotion piece data. Removes it.
+        // Remove empty ChessMove at Row 8 without PromoPieceType
         i = 0;
-        while(i < validMoves.size()){
-            if (validMoves.get(i).getEndPosition().getRow() == 1 && validMoves.get(i).getPromotionPiece() == null){
+        while (i < s) {
+            if (validMoves.get(i).getEndPosition().getRow() == 1 && validMoves.get(i).getPromotionPiece() == null) {
                 validMoves.remove(i);
-            }else i++;
+            } else i++;
         }
     }
 }

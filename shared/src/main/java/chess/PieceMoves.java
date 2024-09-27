@@ -3,44 +3,39 @@ package chess;
 import java.util.ArrayList;
 
 public class PieceMoves {
-
-    private ChessBoard board;
-    private ChessPosition position;
+    private ChessBoard myBoard;
+    private ChessPosition myPosition;
     private ArrayList<ChessMove> validMoves = new ArrayList<>();
-    //private ChessPosition checkPosition;
 
-    public PieceMoves(ChessBoard board, ChessPosition position) {
-        this.board = board;
-        this.position = position;
-        calculatePieceType();
-        // checkMoves();
+    public PieceMoves() {
+
     }
 
-    private void calculatePieceType(){
-        ChessPiece.PieceType pieceType = board.getPiece(position).getPieceType();
-        if (pieceType == ChessPiece.PieceType.KING) {
-            KingMovesCalculator calculator = new KingMovesCalculator();
-            validMoves = calculator.checkMoves(board, position);
-        } else if (pieceType == ChessPiece.PieceType.BISHOP) {
-            BishopMovesCalculator calculator = new BishopMovesCalculator();
-            validMoves = calculator.checkMoves(board, position);
-        } else if (pieceType == ChessPiece.PieceType.ROOK) {
-            RookMovesCalculator calculator = new RookMovesCalculator();
-            validMoves = calculator.checkMoves(board, position);
-        } else if (pieceType == ChessPiece.PieceType.QUEEN) {
-            QueenMovesCalculator calculator = new QueenMovesCalculator();
-            validMoves = calculator.checkMoves(board, position);
-        } else if (pieceType == ChessPiece.PieceType.KNIGHT) {
-            KnightMovesCalculator calculator = new KnightMovesCalculator();
-            validMoves = calculator.checkMoves(board, position);
-        } else if (pieceType == ChessPiece.PieceType.PAWN) {
-            PawnMovesCalculator calculator = new PawnMovesCalculator();
-            validMoves = calculator.checkMoves(board, position);
-        }
-    }
+    public ArrayList<ChessMove> checkPieceMoves(ChessBoard board, ChessPosition position){
+        // Initialize values
+        this.myBoard = board;
+        this.myPosition = position;
 
-    public ArrayList<ChessMove> getValidMoves() {
+        if (board.getPiece(position).getPieceType() == ChessPiece.PieceType.KING){
+            KingMovesCalculator checkMoves = new KingMovesCalculator();
+            validMoves = checkMoves.checkValidMoves(board, position);
+        } else if (board.getPiece(position).getPieceType() == ChessPiece.PieceType.QUEEN){
+            QueenMovesCalculator checkMoves = new QueenMovesCalculator();;
+            validMoves = checkMoves.checkValidMoves(board, position);
+        } else if (board.getPiece(position).getPieceType() == ChessPiece.PieceType.ROOK) {
+            RookMovesCalculator checkMoves = new RookMovesCalculator();
+            validMoves = checkMoves.checkValidMoves(board, position);
+        } else if (board.getPiece(position).getPieceType() == ChessPiece.PieceType.BISHOP) {
+            BishopMovesCalculator checkMoves = new BishopMovesCalculator();
+            validMoves = checkMoves.checkValidMoves(board, position);
+        } else if (board.getPiece(position).getPieceType() == ChessPiece.PieceType.KNIGHT) {
+            KnightMovesCalculator checkMoves = new KnightMovesCalculator();
+            validMoves = checkMoves.checkValidMoves(board, position);
+        } else if (board.getPiece(position).getPieceType() == ChessPiece.PieceType.PAWN) {
+            PawnMovesCalculator checkMoves = new PawnMovesCalculator();
+            validMoves = checkMoves.checkValidMoves(board, position);
+        } else throw new RuntimeException("Invalid piece type");
+
         return validMoves;
     }
-
 }

@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
@@ -12,11 +13,24 @@ import java.util.Objects;
  */
 public class ChessBoard {
 
-    private ChessPiece[][] chessBoard = new ChessPiece[8][8];
+    private ChessPiece[][] board = new ChessPiece[8][8];
+    private ChessPosition position;
+    private ChessPiece piece;
 
     public ChessBoard() {
         
     }
+
+    /**
+     * Initialize Char to Type Map
+     */
+    final static Map<Character, ChessPiece.PieceType> CHAR_TO_TYPE_MAP = Map.of(
+            'p', ChessPiece.PieceType.PAWN,
+            'n', ChessPiece.PieceType.KNIGHT,
+            'r', ChessPiece.PieceType.ROOK,
+            'q', ChessPiece.PieceType.QUEEN,
+            'k', ChessPiece.PieceType.KING,
+            'b', ChessPiece.PieceType.BISHOP);
 
     /**
      * Adds a chess piece to the chessboard
@@ -25,7 +39,7 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        chessBoard[position.getRow()-1][position.getColumn()-1] = piece;
+        board[position.getRow()-1][position.getColumn()-1] = piece;
     }
 
     /**
@@ -36,7 +50,7 @@ public class ChessBoard {
      * position
      */
     public ChessPiece getPiece(ChessPosition position) {
-        return chessBoard[position.getRow()-1][position.getColumn()-1];
+        return board[position.getRow()-1][position.getColumn()-1];
     }
 
     /**
@@ -44,7 +58,7 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        this.chessBoard = loadBoard(("""
+        board = loadBoard("""
                 |r|n|b|q|k|b|n|r|
                 |p|p|p|p|p|p|p|p|
                 | | | | | | | | |
@@ -53,18 +67,10 @@ public class ChessBoard {
                 | | | | | | | | |
                 |P|P|P|P|P|P|P|P|
                 |R|N|B|Q|K|B|N|R|
-                """)).chessBoard;
+                """).board;
     }
 
-    final static Map<Character, ChessPiece.PieceType> CHAR_TO_TYPE_MAP = Map.of(
-            'p', ChessPiece.PieceType.PAWN,
-            'n', ChessPiece.PieceType.KNIGHT,
-            'r', ChessPiece.PieceType.ROOK,
-            'q', ChessPiece.PieceType.QUEEN,
-            'k', ChessPiece.PieceType.KING,
-            'b', ChessPiece.PieceType.BISHOP);
-
-    ChessBoard loadBoard(String boardText) {
+    private static ChessBoard loadBoard(String boardText) {
         var board = new ChessBoard();
         int row = 8;
         int column = 1;
@@ -96,12 +102,11 @@ public class ChessBoard {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessBoard that = (ChessBoard) o;
-        return Objects.deepEquals(chessBoard, that.chessBoard);
+        return Objects.deepEquals(board, that.board) && Objects.equals(position, that.position) && Objects.equals(piece, that.piece);
     }
 
     @Override
     public int hashCode() {
-        return Arrays.deepHashCode(chessBoard);
+        return Objects.hash(Arrays.deepHashCode(board), position, piece);
     }
-
 }

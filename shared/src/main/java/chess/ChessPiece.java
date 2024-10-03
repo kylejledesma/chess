@@ -55,8 +55,27 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        PieceMoves checkMoves = new PieceMoves();
-        validMoves = checkMoves.checkPieceMoves(board, myPosition);
+
+        if (board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.KING){
+            KingMovesCalculator checkMoves = new KingMovesCalculator();
+            validMoves = checkMoves.checkValidMoves(board, myPosition);
+        } else if (board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.QUEEN){
+            QueenMovesCalculator checkMoves = new QueenMovesCalculator();;
+            validMoves = checkMoves.checkValidMoves(board, myPosition);
+        } else if (board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.ROOK) {
+            RookMovesCalculator checkMoves = new RookMovesCalculator();
+            validMoves = checkMoves.checkValidMoves(board, myPosition);
+        } else if (board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.BISHOP) {
+            BishopMovesCalculator checkMoves = new BishopMovesCalculator();
+            validMoves = checkMoves.checkValidMoves(board, myPosition);
+        } else if (board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.KNIGHT) {
+            KnightMovesCalculator checkMoves = new KnightMovesCalculator();
+            validMoves = checkMoves.checkValidMoves(board, myPosition);
+        } else if (board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.PAWN) {
+            PawnMovesCalculator checkMoves = new PawnMovesCalculator();
+            validMoves = checkMoves.checkValidMoves(board, myPosition);
+        } else throw new RuntimeException("Invalid piece type");
+
         return validMoves;
     }
 

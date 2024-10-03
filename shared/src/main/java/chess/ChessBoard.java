@@ -14,11 +14,22 @@ import java.util.Objects;
 public class ChessBoard {
 
     private ChessPiece[][] board = new ChessPiece[8][8];
-    private ChessPosition position;
-    private ChessPiece piece;
+    private String defaultBoard = """
+                |r|n|b|q|k|b|n|r|
+                |p|p|p|p|p|p|p|p|
+                | | | | | | | | |
+                | | | | | | | | |
+                | | | | | | | | |
+                | | | | | | | | |
+                |P|P|P|P|P|P|P|P|
+                |R|N|B|Q|K|B|N|R|
+                """;
 
+    /*
+        Constructor for ChessBoard
+     */
     public ChessBoard() {
-        
+
     }
 
     /**
@@ -54,27 +65,20 @@ public class ChessBoard {
     }
 
     /**
+     * Gets the board
+     */
+    public ChessPiece[][] getBoard() {
+        return this.board;
+    }
+
+    /**
      * Sets the board to the default starting board
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        board = loadBoard("""
-                |r|n|b|q|k|b|n|r|
-                |p|p|p|p|p|p|p|p|
-                | | | | | | | | |
-                | | | | | | | | |
-                | | | | | | | | |
-                | | | | | | | | |
-                |P|P|P|P|P|P|P|P|
-                |R|N|B|Q|K|B|N|R|
-                """).board;
-    }
-
-    private static ChessBoard loadBoard(String boardText) {
-        var board = new ChessBoard();
         int row = 8;
         int column = 1;
-        for (var c : boardText.toCharArray()) {
+        for (var c : defaultBoard.toCharArray()) {
             switch (c) {
                 case '\n' -> {
                     column = 1;
@@ -89,12 +93,11 @@ public class ChessBoard {
                     var type = CHAR_TO_TYPE_MAP.get(Character.toLowerCase(c));
                     var position = new ChessPosition(row, column);
                     var piece = new ChessPiece(color, type);
-                    board.addPiece(position, piece);
+                    board[row-1][column-1] = piece; //(position, piece);
                     column++;
                 }
             }
         }
-        return board;
     }
 
     @Override
@@ -102,11 +105,11 @@ public class ChessBoard {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessBoard that = (ChessBoard) o;
-        return Objects.deepEquals(board, that.board) && Objects.equals(position, that.position) && Objects.equals(piece, that.piece);
+        return Objects.deepEquals(board, that.board);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(Arrays.deepHashCode(board), position, piece);
+        return Arrays.deepHashCode(board);
     }
 }

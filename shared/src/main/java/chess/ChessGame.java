@@ -73,15 +73,52 @@ public class ChessGame implements Cloneable {
     }
 
     /**
+     * Check for team turn
+     * @param team
+     * @return
+     */
+    public boolean checkTeamTurn(TeamColor team) throws InvalidMoveException {
+        if (this.teamTurn == team) {
+            return true;
+        }else throw new InvalidMoveException();
+    }
+
+    public boolean checkPosition(ChessPosition position) throws InvalidMoveException {
+        if (chessBoard.getPiece(position) == null) {
+            throw new InvalidMoveException("No piece on that position!");
+        } else return true;
+    }
+
+    /**
      * Makes a move in a chess game
      *
      * @param move chess move to preform
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-       ChessPiece piece = this.chessBoard.getPiece(move.getStartPosition());
-       this.chessBoard.addPiece(move.getEndPosition(), piece);
-       setSquareNull(move.getStartPosition());
+        checkPosition(move.getStartPosition());
+        checkTeamTurn(chessBoard.getPiece(move.getStartPosition()).getTeamColor());
+
+        Collection<ChessMove> testMoves = validMoves(move.getStartPosition());
+
+        for (ChessMove testMove : validMoves(move.getStartPosition())) {
+            if (move.equals(testMove)) {
+                ChessPiece piece = this.chessBoard.getPiece(move.getStartPosition()); // Edit this
+                this.chessBoard.addPiece(move.getEndPosition(), piece);
+                setSquareNull(move.getStartPosition());
+                if (move.getPromotionPiece() != null) {
+                    this.chessBoard.addPiece(move.getEndPosition(), new ChessPiece(piece.getTeamColor(), move.getPromotionPiece()));
+                }
+
+                if (this.teamTurn == TeamColor.WHITE) {
+                    this.teamTurn = TeamColor.BLACK;
+                } else if (this.teamTurn == TeamColor.BLACK) {
+                    this.teamTurn = TeamColor.WHITE;
+                }
+                return;
+            }
+        }
+        throw new InvalidMoveException();
     }
 
     /**
@@ -167,8 +204,8 @@ public class ChessGame implements Cloneable {
                     return new ChessPosition(i+1, j+1); // Remember to increment values of i and j
                 }
             }
-        }
-        throw new RuntimeException("Piece not on board");
+        } return null;
+        //throw new RuntimeException("Piece not on board");
     }
 
     /**
@@ -318,6 +355,15 @@ public class ChessGame implements Cloneable {
         board.addPiece(position, null);
     }
 
+    private ChessBoard cloneBoard(ChessBoard board1, ChessBoard board2) {
+        for (int i = 0; i < board1.getBoard().length; i++) {
+            for (int j = 0; j < board1.getBoard()[i].length; j++) {
+                board2.getBoard()[i][j] = board1.getBoard()[i][j];
+            }
+        }
+        return board2;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -329,15 +375,6 @@ public class ChessGame implements Cloneable {
     @Override
     public int hashCode() {
         return Objects.hash(teamTurn, chessBoard, validMoves, endPositions);
-    }
-
-    private ChessBoard cloneBoard(ChessBoard board1, ChessBoard board2) {
-        for (int i = 0; i < board1.getBoard().length; i++) {
-            for (int j = 0; j < board1.getBoard()[i].length; j++) {
-                board2.getBoard()[i][j] = board1.getBoard()[i][j];
-            }
-        }
-        return board2;
     }
 }
 

@@ -14,7 +14,6 @@ public class ChessPiece {
 
     private final ChessGame.TeamColor pieceColor;
     private final PieceType type;
-    private ArrayList<ChessMove> validMoves = new ArrayList<>();
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
@@ -55,7 +54,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-
+        ArrayList<ChessMove> validMoves = new ArrayList<>();
         if (board.getPiece(myPosition).getPieceType() == ChessPiece.PieceType.KING){
             KingMovesCalculator checkMoves = new KingMovesCalculator();
             validMoves = checkMoves.checkValidMoves(board, myPosition);
@@ -84,11 +83,11 @@ public class ChessPiece {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessPiece that = (ChessPiece) o;
-        return pieceColor == that.pieceColor && type == that.type && Objects.equals(validMoves, that.validMoves);
+        return pieceColor == that.pieceColor && type == that.type;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(pieceColor, type, validMoves);
+        return Objects.hash(pieceColor, type);
     }
 }

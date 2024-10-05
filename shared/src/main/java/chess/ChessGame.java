@@ -73,6 +73,34 @@ public class ChessGame implements Cloneable {
     }
 
     /**
+     * Temporary Code to get all the valid moves of a team
+     * @param teamColor
+     * @return
+     */
+    public Collection<ChessMove> getAllValidMoves(TeamColor teamColor) {
+        Collection<ChessMove> allValidMoves = new ArrayList<>();
+        // For testing
+        ChessPiece testPiece;
+
+        for (int i = 0; i < chessBoard.getBoard().length; i++) {
+            for (int j = 0; j < chessBoard.getBoard()[i].length; j++) {
+                if (chessBoard.getBoard()[i][j] == null) {
+                } else if (chessBoard.getBoard()[i][j] == null) {
+
+                } else if (chessBoard.getBoard()[i][j].getTeamColor() == teamColor) {
+                    // Test function
+                    testPiece = chessBoard.getBoard()[i][j];
+
+                    Collection<ChessMove> singlePieceMoves = new ArrayList<>();
+                    singlePieceMoves = validMoves(new ChessPosition(i+1, j+1));
+                    allValidMoves.addAll(singlePieceMoves);
+                }
+            }
+        }
+        return allValidMoves;
+    }
+
+    /**
      * Check for team turn
      * @param team
      * @return
@@ -326,7 +354,17 @@ public class ChessGame implements Cloneable {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        if (isInCheck(teamColor)){
+            return false;
+        } else {
+            Collection<ChessMove> validMovesHolder = new ArrayList<>();
+            ChessPosition kingPosition = getPiecePosition(teamColor, ChessPiece.PieceType.KING);
+            validMovesHolder = getAllValidMoves(teamColor);
+
+            if (validMovesHolder.isEmpty()) {
+                return true;
+            } else { return false; }
+        }
     }
 
     /**

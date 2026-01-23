@@ -59,6 +59,9 @@ public class ChessPiece {
         if (board.getPiece(myPosition).getPieceType() == PieceType.KING) {
             KingMovesCalculator checkMoves = new KingMovesCalculator();
             validMoves = checkMoves.checkValidMoves(board, myPosition);
+        } else if (board.getPiece(myPosition).getPieceType() == PieceType.QUEEN) {
+            QueenMovesCalculator checkMoves = new QueenMovesCalculator();
+            validMoves = checkMoves.checkValidMoves(board, myPosition);
         }
 
         return validMoves;

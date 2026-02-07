@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -53,7 +54,8 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        ChessPiece piece = chessBoard.getPiece(startPosition);
+        return piece.pieceMoves(chessBoard, startPosition);
     }
 
     /**
@@ -66,12 +68,15 @@ public class ChessGame {
         // Pre-move check: teamTurn is correct, piece exists in position
         checkPosition(move.getStartPosition());
         checkTeamTurn(chessBoard.getPiece(move.getStartPosition()).getTeamColor());
-
-        ChessPiece piece = chessBoard.getPiece(move.getStartPosition());
-        this.chessBoard.addPiece(move.getEndPosition(), piece);
-        this.chessBoard.addPiece(move.getStartPosition(), null);
-        if (this.teamTurn == TeamColor.WHITE) { this.teamTurn = TeamColor.BLACK; }
-        else { this.teamTurn = TeamColor.WHITE; }
+        for (ChessMove testMove : validMoves(move.getStartPosition())) {
+            if (move.equals(testMove)) {
+                ChessPiece piece = chessBoard.getPiece(move.getStartPosition());
+                this.chessBoard.addPiece(move.getEndPosition(), piece);
+                this.chessBoard.addPiece(move.getStartPosition(), null);
+                if (this.teamTurn == TeamColor.WHITE) { this.teamTurn = TeamColor.BLACK; }
+                else { this.teamTurn = TeamColor.WHITE; }
+            } else throw new InvalidMoveException();
+        }
     }
 
     /**

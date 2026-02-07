@@ -75,8 +75,9 @@ public class ChessGame {
                 this.chessBoard.addPiece(move.getStartPosition(), null);
                 if (this.teamTurn == TeamColor.WHITE) { this.teamTurn = TeamColor.BLACK; }
                 else { this.teamTurn = TeamColor.WHITE; }
-            } else throw new InvalidMoveException();
-        }
+                return;
+            }
+        } throw new InvalidMoveException();
     }
 
     /**

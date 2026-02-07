@@ -66,6 +66,8 @@ public class ChessGame {
         ChessPiece piece = chessBoard.getPiece(move.getStartPosition());
         this.chessBoard.addPiece(move.getEndPosition(), piece);
         this.chessBoard.addPiece(move.getStartPosition(), null);
+        if (this.teamTurn == TeamColor.WHITE) { this.teamTurn = TeamColor.BLACK; }
+        else { this.teamTurn = TeamColor.WHITE; }
     }
 
     /**

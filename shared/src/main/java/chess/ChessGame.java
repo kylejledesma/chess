@@ -55,7 +55,18 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         ChessPiece piece = chessBoard.getPiece(startPosition);
-        return piece.pieceMoves(chessBoard, startPosition);
+        ChessBoard testBoard = new ChessBoard();
+        Collection<ChessMove> validMoves = piece.pieceMoves(chessBoard, startPosition);
+        Collection<ChessMove> invalidMoves = new ArrayList<>();
+        for (ChessMove move : validMoves) {
+            testBoard = cloneBoard(chessBoard, testBoard);
+            testBoard = makeMove(testBoard, move);
+            if (isInCheck(piece.getTeamColor(), testBoard)){
+                invalidMoves.add(move);
+            }
+        }
+        validMoves.removeAll(invalidMoves);
+        return validMoves;
     }
 
     /**
@@ -81,13 +92,48 @@ public class ChessGame {
     }
 
     /**
+     * Overloaded makeMove for test case
+     * @param testBoard
+     * @param move
+     */
+    public ChessBoard makeMove(ChessBoard testBoard, ChessMove move) {
+        ChessPiece piece = testBoard.getPiece(move.getStartPosition());
+        testBoard.addPiece(move.getEndPosition(), piece);
+        setSquareNull(move.getStartPosition(), testBoard);
+        return testBoard;
+    }
+
+    /**
      * Determines if the given team is in check
      *
      * @param teamColor which team to check for check
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        ChessPosition kingPosition = getPiecePosition(teamColor, ChessPiece.PieceType.KING);
+        ArrayList<ChessMove> opponentMoves = new ArrayList<>(getEnemyPositions(teamColor));
+        for (ChessMove move : opponentMoves) {
+            if (move.getEndPosition().equals(kingPosition)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Overload for testBoard
+     * @param teamColor
+     * @return
+     */
+    public boolean isInCheck(TeamColor teamColor, ChessBoard testBoard) {
+        ChessPosition kingPosition = getPiecePosition(teamColor, ChessPiece.PieceType.KING, testBoard);
+        ArrayList<ChessMove> opponentMoves = new ArrayList<>(getEnemyPositions(teamColor, testBoard));
+        for (ChessMove move : opponentMoves) {
+            if (move.getEndPosition().equals(kingPosition)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -151,6 +197,83 @@ public class ChessGame {
     }
 
     /**
+     * Overload for testBoard
+     * @param teamColor
+     * @param pieceType
+     * @param testBoard
+     * @return
+     */
+    private ChessPosition getPiecePosition(TeamColor teamColor, ChessPiece.PieceType pieceType, ChessBoard testBoard) {
+        for (int i = 0; i < testBoard.getBoard().length; i++) {
+            for (int j = 0; j < testBoard.getBoard()[i].length; j++) {
+                if (testBoard.getBoard()[i][j] == null) {
+                    // Pass this null spot and check the next one
+                } else if (testBoard.getBoard()[i][j].getTeamColor() == teamColor &&
+                        testBoard.getBoard()[i][j].getPieceType() == pieceType) {
+                    return new ChessPosition(i+1, j+1); // Remember to increment values of i and j
+                }
+            }
+        } return null;
+    }
+
+    /**
+     * Gets Collection of next turn enemy possible positions
+     * @param teamColor
+     * @return Collection<ChessMove>
+     */
+    private Collection<ChessMove> getEnemyPositions(TeamColor teamColor){
+        Collection<ChessMove> enemyMoves = new ArrayList<>();
+        // For testing
+        ChessPiece testPiece;
+
+        for (int i = 0; i < chessBoard.getBoard().length; i++) {
+            for (int j = 0; j < chessBoard.getBoard()[i].length; j++) {
+                if (chessBoard.getBoard()[i][j] == null) {
+                } else if (chessBoard.getBoard()[i][j] == null) {
+
+                } else if (chessBoard.getBoard()[i][j].getTeamColor() != teamColor) {
+                    // Test function
+                    testPiece = chessBoard.getBoard()[i][j];
+
+                    Collection<ChessMove> singlePieceMoves = new ArrayList<>();
+                    singlePieceMoves = chessBoard.getBoard()[i][j].pieceMoves(chessBoard, new ChessPosition(i+1, j+1));
+                    enemyMoves.addAll(singlePieceMoves);
+                }
+            }
+        }
+        return enemyMoves;
+    }
+
+    /**
+     * Overloaded method for the testBoard
+     * @param teamColor
+     * @param testBoard
+     * @return
+     */
+    private Collection<ChessMove> getEnemyPositions(TeamColor teamColor, ChessBoard testBoard){
+        Collection<ChessMove> enemyMoves = new ArrayList<>();
+        // For testing
+        ChessPiece testPiece;
+
+        for (int i = 0; i < testBoard.getBoard().length; i++) {
+            for (int j = 0; j < testBoard.getBoard()[i].length; j++) {
+                if (testBoard.getBoard()[i][j] == null) {
+                } else if (testBoard.getBoard()[i][j] == null) {
+
+                } else if (testBoard.getBoard()[i][j].getTeamColor() != teamColor) {
+                    // Test function
+                    testPiece = testBoard.getBoard()[i][j];
+
+                    Collection<ChessMove> singlePieceMoves = new ArrayList<>();
+                    singlePieceMoves = testBoard.getBoard()[i][j].pieceMoves(testBoard, new ChessPosition(i+1, j+1));
+                    enemyMoves.addAll(singlePieceMoves);
+                }
+            }
+        }
+        return enemyMoves;
+    }
+
+    /**
      * Check that teamTurn matches
      * @param team
      * @return
@@ -171,6 +294,30 @@ public class ChessGame {
         if (chessBoard.getPiece(position) == null) {
             throw new InvalidMoveException("No piece on that position!");
         } else return true;
+    }
+
+    /**
+     * Clones a board into a testBoard for checks
+     * @param board1
+     * @param board2
+     * @return
+     */
+    private ChessBoard cloneBoard(ChessBoard board1, ChessBoard board2) {
+        for (int i = 0; i < board1.getBoard().length; i++) {
+            for (int j = 0; j < board1.getBoard()[i].length; j++) {
+                board2.getBoard()[i][j] = board1.getBoard()[i][j];
+            }
+        }
+        return board2;
+    }
+
+    /**
+     * Removes piece from a position post-move
+     * @param position
+     * @param board
+     */
+    private void setSquareNull(ChessPosition position, ChessBoard board){
+        board.addPiece(position, null);
     }
 
     @Override

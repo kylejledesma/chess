@@ -117,6 +117,27 @@ public class ChessGame {
         return this.chessBoard;
     }
 
+    /**
+     * Gets a specific piece's position
+     *
+     * @param teamColor
+     * @param pieceType
+     * @return ChessPosition
+     */
+    private ChessPosition getPiecePosition(TeamColor teamColor, ChessPiece.PieceType pieceType) {
+        for (int i = 0; i < chessBoard.getBoard().length; i++) {
+            for (int j = 0; j < chessBoard.getBoard()[i].length; j++) {
+                if (chessBoard.getBoard()[i][j] == null) {
+                    // Pass this null spot and check the next one
+                } else if (chessBoard.getBoard()[i][j].getTeamColor() == teamColor &&
+                        chessBoard.getBoard()[i][j].getPieceType() == pieceType) {
+                    return new ChessPosition(i+1, j+1); // Remember to increment values of i and j
+                }
+            }
+        }
+        throw new RuntimeException("Piece not on board");
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {

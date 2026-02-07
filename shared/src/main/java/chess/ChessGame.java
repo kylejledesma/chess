@@ -63,6 +63,10 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        // Pre-move check: teamTurn is correct, piece exists in position
+        checkPosition(move.getStartPosition());
+        checkTeamTurn(chessBoard.getPiece(move.getStartPosition()).getTeamColor());
+
         ChessPiece piece = chessBoard.getPiece(move.getStartPosition());
         this.chessBoard.addPiece(move.getEndPosition(), piece);
         this.chessBoard.addPiece(move.getStartPosition(), null);
@@ -138,6 +142,29 @@ public class ChessGame {
             }
         }
         throw new RuntimeException("Piece not on board");
+    }
+
+    /**
+     * Check that teamTurn matches
+     * @param team
+     * @return
+     */
+    public boolean checkTeamTurn(TeamColor team) throws InvalidMoveException {
+        if (this.teamTurn == team) {
+            return true;
+        }else throw new InvalidMoveException();
+    }
+
+    /**
+     * Check that piece exists in position
+     * @param position
+     * @return
+     * @throws InvalidMoveException
+     */
+    public boolean checkPosition(ChessPosition position) throws InvalidMoveException {
+        if (chessBoard.getPiece(position) == null) {
+            throw new InvalidMoveException("No piece on that position!");
+        } else return true;
     }
 
     @Override
